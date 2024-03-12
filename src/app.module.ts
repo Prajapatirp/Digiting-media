@@ -3,6 +3,8 @@ import { ConfigModule } from '@nestjs/config';
 import { SequelizeModule } from '@nestjs/sequelize';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
+import { UsersModule } from './users/users.module';
+import { AuthUser } from './model/authUser.model';
 
 @Module({
   imports: [
@@ -11,15 +13,18 @@ import { AppService } from './app.service';
     }),
     SequelizeModule.forRoot({
       dialect: 'mysql',
-      host: 'localhost',
-      port: 3306,
-      username: 'root',
-      password: '',
-      database: 'digiting_media',
+      host: process.env.HOST,
+      port: +process.env.DB_PORT,
+      username: process.env.DB_USERNAME,
+      password: process.env.DB_PASSWORD,
+      database: process.env.DB_NAME,
       synchronize: true,
       autoLoadModels: true,
-      models: [], // Your Sequelize models can go here
+      models: [
+        AuthUser
+      ],
     }),
+    UsersModule,
   ],
   controllers: [AppController],
   providers: [AppService],
