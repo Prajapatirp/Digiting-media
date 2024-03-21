@@ -1,0 +1,10 @@
+{
+    "plugins": [
+      "express"
+    ],
+    "extends": ["eslint:recommended", "plugin:express/recommended"],
+    "rules": {
+      // Additional rules or overrides
+    }
+  }
+  
