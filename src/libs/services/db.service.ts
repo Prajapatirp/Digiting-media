@@ -23,9 +23,7 @@ export class DbService {
       throw HandleResponse(
         HttpStatus.NOT_FOUND,
         ResponseData.ERROR,
-        errorMessage.message,
-        undefined,
-        undefined,
+        errorMessage.message
       );
     }
 
@@ -64,9 +62,7 @@ export class DbService {
       throw HandleResponse(
         HttpStatus.NOT_FOUND,
         ResponseData.ERROR,
-        errorMessage.message,
-        undefined,
-        undefined,
+        errorMessage.message
       );
     }
 
@@ -83,13 +79,8 @@ export class DbService {
     condition?: any,
     order?: any[],
     include?: any[],
-    errorMessage?: { message: string },
-    isSoftDelete?: boolean,
+    errorMessage?: { message: string }
   ) {
-    if (isSoftDelete) {
-      condition.is_deleted = false;
-    }
-
     const result = await collection.findAll({
       attributes: selectAttribute,
       where: condition,
@@ -102,9 +93,7 @@ export class DbService {
       throw HandleResponse(
         HttpStatus.NOT_FOUND,
         ResponseData.ERROR,
-        errorMessage.message,
-        undefined,
-        undefined,
+        errorMessage.message
       );
     }
     return result;
@@ -134,9 +123,7 @@ export class DbService {
       throw HandleResponse(
         HttpStatus.NOT_FOUND,
         ResponseData.ERROR,
-        errorMessage.message,
-        undefined,
-        undefined,
+        errorMessage.message
       );
     }
 

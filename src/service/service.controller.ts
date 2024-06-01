@@ -22,11 +22,11 @@ import {
   ApiTags,
 } from '@nestjs/swagger';
 import { StatusRO } from 'src/libs/utils/interface';
-import { UpdateServiceDto } from './dto/updateService.dto';
-import { AddServiceDto } from './dto/addService.dto';
+import { UpdatePackageDto } from './dto/updatePackage.dto';
+import { AddPackageDto } from './dto/addPackage.dto';
 import { ListOfDataDto } from 'src/auth-user/dto/listOfData.dto';
 
-@Controller('service')
+@Controller('package')
 @ApiTags(ModuleName.package)
 export class ServiceController {
   constructor(private readonly serviceService: ServiceService) {}
@@ -35,44 +35,44 @@ export class ServiceController {
   @UseGuards(JwtGuard, RolesGuard)
   @ApiBearerAuth()
   @HttpCode(HttpStatus.OK)
-  @ApiOperation({ summary: 'This api is for add different service' })
+  @ApiOperation({ summary: 'This api is for add different package' })
   @Post('')
-  addService(@Body() dto: AddServiceDto, @Req() req: any): Promise<StatusRO> {
-    return this.serviceService.addService(dto);
+  addPackage(@Body() dto: AddPackageDto, @Req() req: any): Promise<StatusRO> {
+    return this.serviceService.addPackage(dto, req);
   }
 
   @Roles(Role.Admin)
   @UseGuards(JwtGuard, RolesGuard)
   @ApiBearerAuth()
   @HttpCode(HttpStatus.OK)
-  @ApiOperation({ summary: 'This api is for update different service' })
-  @Put('/:serviceId')
-  @ApiParam({ example: 1, name: 'serviceId', required: true })
-  updateService(
-    @Param('serviceId') serviceId: number,
-    @Body() dto: UpdateServiceDto,
+  @ApiOperation({ summary: 'This api is for update different package' })
+  @Put('/:packageId')
+  @ApiParam({ example: 1, name: 'packageId', required: true })
+  updatePackage(
+    @Param('packageId') packageId: number,
+    @Body() dto: UpdatePackageDto,
   ): Promise<StatusRO> {
-    return this.serviceService.updateService(dto, serviceId);
+    return this.serviceService.updatePackage(dto, packageId);
   }
 
   @Roles(Role.Admin)
   @UseGuards(JwtGuard, RolesGuard)
   @ApiBearerAuth()
   @HttpCode(HttpStatus.OK)
-  @ApiOperation({ summary: 'This api is for delete different service' })
-  @Delete('/:serviceId')
-  @ApiParam({ example: 1, name: 'serviceId', required: true })
-  deleteService(@Param('serviceId') serviceId: number): Promise<StatusRO> {
-    return this.serviceService.deleteService(serviceId);
+  @ApiOperation({ summary: 'This api is for delete different package' })
+  @Delete('/:packageId')
+  @ApiParam({ example: 1, name: 'packageId', required: true })
+  deletePackage(@Param('packageId') packageId: number): Promise<StatusRO> {
+    return this.serviceService.deletePackage(packageId);
   }
 
   @Roles(Role.Admin)
   @UseGuards(JwtGuard, RolesGuard)
   @ApiBearerAuth()
   @HttpCode(HttpStatus.OK)
-  @ApiOperation({ summary: 'This api is for list different service' })
+  @ApiOperation({ summary: 'This api is for list different package' })
   @Post('/list')
-  listService(@Body() dto: ListOfDataDto): Promise<StatusRO> {
-    return this.serviceService.listService(dto);
+  listPackage(@Body() dto: ListOfDataDto): Promise<StatusRO> {
+    return this.serviceService.listPackage(dto);
   }
 }

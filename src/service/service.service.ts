@@ -1,15 +1,14 @@
-import { HttpStatus, Injectable, Logger } from '@nestjs/common';
-import { InjectModel } from '@nestjs/sequelize';
-import { DbService } from 'src/libs/services/db.service';
-import { StatusRO } from 'src/libs/utils/interface';
-import { ServiceModel } from 'src/libs/utils/modelInterface';
-import { HandleResponse } from 'src/libs/helper/handleResponse';
-import { ResponseData } from 'src/libs/utils/enums';
-import { Messages } from 'src/libs/utils/message';
-import { UpdateServiceDto } from './dto/updateService.dto';
-import { AddServiceDto } from './dto/addService.dto';
-import { ListOfDataDto } from 'src/auth-user/dto/listOfData.dto';
-import { Package } from 'src/models/package.model';
+import { HttpStatus, Injectable, Logger } from '@nestjs/common'
+import { InjectModel } from '@nestjs/sequelize'
+import { DbService } from 'src/libs/services/db.service'
+import { StatusRO } from 'src/libs/utils/interface'
+import { HandleResponse } from 'src/libs/helper/handleResponse'
+import { ResponseData } from 'src/libs/utils/enums'
+import { Messages } from 'src/libs/utils/message'
+import { UpdatePackageDto } from './dto/updatePackage.dto'
+import { AddPackageDto } from './dto/addPackage.dto'
+import { ListOfDataDto } from 'src/auth-user/dto/listOfData.dto'
+import { Package } from 'src/models/package.model'
 
 @Injectable()
 export class ServiceService {
@@ -18,69 +17,49 @@ export class ServiceService {
     private dbService: DbService,
   ) {}
 
-  async addService(addServiceDto: AddServiceDto): Promise<StatusRO> {
-    const { serviceName } = addServiceDto;
+  async addPackage(AddPackageDto: AddPackageDto, req: any): Promise<StatusRO> {
+    const { package_name, package_duration, package_amount, package_description, package_image } = AddPackageDto
+    const authId = req?.user?.id
 
-    const addService: ServiceModel = await this.dbService.create(
-      this.serviceModel,
-      { service_name: serviceName },
-    );
+    const createPackage = {
+      package_name,
+      package_duration,
+      package_amount,
+      package_description,
+      package_image,
+      auth_id: authId,
+    }
 
-    Logger.log(`Service is ${Messages.ADD_SUCCESS}`);
-    return HandleResponse(
-      HttpStatus.CREATED,
-      ResponseData.SUCCESS,
-      `Service is ${Messages.ADD_SUCCESS}`,
-      addService.id,
-      undefined,
-    );
+    const addPackage = await this.dbService.create(this.serviceModel, createPackage)
+
+    Logger.log(`Package is ${Messages.ADD_SUCCESS}`)
+    return HandleResponse(HttpStatus.CREATED, ResponseData.SUCCESS, `Package is ${Messages.ADD_SUCCESS}`, addPackage.id)
   }
 
-  async updateService(
-    updateServiceDto: UpdateServiceDto,
-    serviceId: number,
-  ): Promise<StatusRO> {
-    const { serviceName } = updateServiceDto;
-
-    const updateService: ServiceModel = await this.dbService.update(
+  async updatePackage(updatePackageDto: UpdatePackageDto, packageId: number): Promise<StatusRO> {
+    await this.dbService.update(
       this.serviceModel,
-      { service_name: serviceName },
-      { id: serviceId },
+      { ...updatePackageDto },
+      { id: packageId },
       null,
       { message: Messages.NOT_FOUND },
       true,
-    );
+    )
 
-    Logger.log(`Service is ${Messages.UPDATE_SUCCESS}`);
-    return HandleResponse(
-      HttpStatus.CREATED,
-      ResponseData.SUCCESS,
-      `Service is ${Messages.UPDATE_SUCCESS}`,
-      undefined,
-      undefined,
-    );
+    Logger.log(`Package is ${Messages.UPDATE_SUCCESS}`)
+    return HandleResponse(HttpStatus.CREATED, ResponseData.SUCCESS, `Package is ${Messages.UPDATE_SUCCESS}`)
   }
 
-  async deleteService(serviceId: number): Promise<StatusRO> {
-    const deleteService: ServiceModel = await this.dbService.update(
-      this.serviceModel,
-      { is_deleted: true },
-      { id: serviceId },
-      null,
-      { message: Messages.NOT_FOUND },
-    );
+  async deletePackage(packageId: number): Promise<StatusRO> {
+    await this.dbService.update(this.serviceModel, { is_deleted: true }, { id: packageId }, null, {
+      message: Messages.NOT_FOUND,
+    })
 
-    Logger.log(`Service is ${Messages.DELETE_SUCCESS}`);
-    return HandleResponse(
-      HttpStatus.OK,
-      ResponseData.SUCCESS,
-      `Service is ${Messages.DELETED_SUCCESS}`,
-      undefined,
-      undefined,
-    );
+    Logger.log(`Package is ${Messages.DELETE_SUCCESS}`)
+    return HandleResponse(HttpStatus.OK, ResponseData.SUCCESS, `Package is ${Messages.DELETED_SUCCESS}`)
   }
 
-  async listService(dto: ListOfDataDto): Promise<StatusRO> {
+  async listPackage(dto: ListOfDataDto): Promise<StatusRO> {
     const listOfService: any[] = await this.dbService.findAll(
       this.serviceModel,
       {
@@ -93,16 +72,9 @@ export class ServiceService {
       [['createdAt', 'DESC']],
       null,
       { message: Messages.NOT_FOUND },
-      true,
-    );
+    )
 
-    Logger.log(`List of services ${Messages.GET_SUCCESS}`);
-    return HandleResponse(
-      HttpStatus.OK,
-      ResponseData.SUCCESS,
-      undefined,
-      listOfService,
-      undefined,
-    );
+    Logger.log(`List of package ${Messages.GET_SUCCESS}`)
+    return HandleResponse(HttpStatus.OK, ResponseData.SUCCESS, undefined, listOfService)
   }
 }

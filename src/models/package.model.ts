@@ -38,6 +38,11 @@ export class Package extends Model<Package> {
   @Column(DataType.TEXT)
   package_description: string;
 
+  @AllowNull(true)
+  @Column
+  @MaxLength(255)
+  package_image: string;
+
   @Default(Sequelize.literal('CURRENT_TIMESTAMP'))
   @Column({ type: 'TIMESTAMP' })
   createdAt: Date;
