@@ -11,12 +11,7 @@ export class DbService {
     errorMessage?: { message: string },
     include?: any[],
     order?: any[],
-    isSoftDelete: boolean = false,
   ) {
-    if (isSoftDelete) {
-      condition.is_deleted = false;
-    }
-
     const result = await collection.findOne({
       attributes: selectAttribute,
       where: condition,
@@ -41,23 +36,7 @@ export class DbService {
     collection: any,
     insertData: any,
     transaction?: any,
-    uniqueCheck?: { uniqueField: string; message: string },
   ) {
-    if (uniqueCheck) {
-      const uniqueField = uniqueCheck?.uniqueField;
-      const response = await this.findOne(collection, {
-        [uniqueField]: insertData[uniqueField],
-      });
-      if (response) {
-        throw HandleResponse(
-          HttpStatus.BAD_REQUEST,
-          ResponseData.ERROR,
-          uniqueCheck.message,
-          undefined,
-          undefined,
-        );
-      }
-    }
     return collection.create(insertData, { transaction });
   }
 

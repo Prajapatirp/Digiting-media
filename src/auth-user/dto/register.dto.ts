@@ -4,30 +4,47 @@ import {
   IsEnum,
   IsMobilePhone,
   IsNotEmpty,
-  IsNumber,
   IsOptional,
   IsString,
-  Matches,
-  MaxLength,
-  MinLength,
-  ValidateIf,
+  Matches
 } from 'class-validator';
 import { Match } from 'src/libs/dto/match.decorator';
+import { Role } from 'src/libs/utils/enums';
 import { Messages } from 'src/libs/utils/message';
 
 export class RegisterDto {
   @ApiProperty({
-    example: 'krishna',
+    example: 'Joe',
     type: 'string',
     format: 'string',
     required: true,
   })
   @IsString()
   @IsNotEmpty()
-  name: string;
+  first_name: string;
 
   @ApiProperty({
-    example: 'krishna@gmail.com',
+    example: 'John',
+    type: 'string',
+    format: 'string',
+    required: true,
+  })
+  @IsString()
+  @IsNotEmpty()
+  last_name: string;
+
+  @ApiProperty({
+    example: 'Patel',
+    type: 'string',
+    format: 'string',
+    required: true,
+  })
+  @IsString()
+  @IsNotEmpty()
+  middle_name: string;
+
+  @ApiProperty({
+    example: 'admin@gmail.com',
     type: 'string',
     format: 'string',
     required: true,
@@ -37,7 +54,7 @@ export class RegisterDto {
   email: string;
 
   @ApiProperty({
-    example: 'Krishna@1234',
+    example: 'Admin@123',
     type: 'string',
     format: 'string',
     required: false,
@@ -53,7 +70,7 @@ export class RegisterDto {
   password: string;
 
   @ApiProperty({
-    example: 'Krishna@1234',
+    example: 'Admin@1234',
     type: 'string',
     format: 'string',
     required: false,
@@ -72,94 +89,28 @@ export class RegisterDto {
   @IsString()
   @IsMobilePhone()
   @IsNotEmpty()
-  contactNo: string;
+  phone_no: string;
 
-  @ApiProperty({ example: 'Manager', type: 'string', required: true })
+  @ApiProperty({ example: 'Admin', type: 'string', required: true })
   @IsEnum({
-    Employee: 'Employee',
-    Vendor: 'Vendor',
-    Manager: 'Manager',
-    Admin: 'Admin',
+    Admin: Role.Admin,
+    Dealer: Role.Dealer
   })
   @IsNotEmpty()
   role: string;
 
   @ApiProperty({
-    example: 'Anand Nagar Flats, 40/406, Prahlad Nagar',
-    type: 'string',
-    format: 'string',
-    required: true,
-  })
-  @IsString()
-  @IsNotEmpty()
-  address: string;
-
-  @ApiProperty({
-    example: '380015',
-    type: 'string',
-    format: 'string',
-    required: true,
-  })
-  @MinLength(6)
-  @MaxLength(6)
-  @IsString()
-  @IsNotEmpty()
-  zipCode: string;
-
-  @ApiProperty({
-    example: 'rajkot',
-    type: 'string',
-    format: 'string',
-    required: true,
-  })
-  @IsString()
-  @IsNotEmpty()
-  city: string;
-
-  @ApiProperty({
-    example: 'gujarat',
-    type: 'string',
-    format: 'string',
-    required: true,
-  })
-  @IsString()
-  @IsNotEmpty()
-  state: string;
-
-  @ApiProperty({
-    example: 'Developer',
+    example: 'user.png',
     type: 'string',
     format: 'string',
     required: false,
   })
   @IsString()
-  @IsNotEmpty()
-  @ValidateIf((o) => o.role === 'Employee')
-  designation: string;
-
-  @ApiProperty({
-    example: [1, 2],
-    type: 'array',
-    items: { type: 'number' },
-    required: false,
-  })
-  @IsNumber({}, { each: true })
-  @IsNotEmpty()
-  @ValidateIf((o) => o.role === 'Vendor')
-  serviceId: number[];
-
-  @ApiProperty({
-    example: [1, 2],
-    type: 'array',
-    items: { type: 'number' },
-    required: false,
-  })
-  @IsNumber({}, { each: true })
   @IsOptional()
-  project_id: number[];
-
+  profile_image: string;
+  
   static validatePasswordRequirement(dto: RegisterDto): void {
-    const requiredRoles = ['manager', 'admin', 'super admin'];
+    const requiredRoles = ['Admin', 'Dealer'];
     if (requiredRoles.includes(dto.role.toLowerCase())) {
       if (!dto.password || !dto.confirmPassword) {
         throw new Error(Messages.PASSWORD_REQUIRED);

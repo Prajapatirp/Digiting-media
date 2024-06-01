@@ -46,10 +46,10 @@ async function bootstrap() {
   app.setGlobalPrefix(globalPrefix);
 
   const config = new DocumentBuilder()
-    .setTitle('building management api')
-    .setDescription('Building management')
+    .setTitle('Degiting Media api')
+    .setDescription('Degiting Media')
     .setVersion('1.0')
-    .addTag('Building management')
+    .addTag('Degiting Media')
     .addBearerAuth({
       type: 'http',
       scheme: 'bearer',

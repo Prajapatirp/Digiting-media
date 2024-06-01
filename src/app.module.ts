@@ -20,14 +20,20 @@ dotenv.config();
 @Module({
   imports: [
     SequelizeModule.forRoot({
+      // dialect: 'mysql',
+      // host: process.env.DB_HOST,
+      // port: +process.env.DB_PORT,
+      // username: process.env.DB_USERNAME,
+      // password: process.env.DB_PASSWORD,
+      // database: process.env.DB_NAME,
       dialect: 'mysql',
-      host: process.env.DB_HOST,
-      port: +process.env.DB_PORT,
-      username: process.env.DB_USERNAME,
-      password: process.env.DB_PASSWORD,
-      database: process.env.DB_NAME,
+      host: 'b5eaibq5aqmkgplyf7yq-mysql.services.clever-cloud.com',
+      port: 3306,
+      username: 'u7d3cgjlu9soc5te',
+      password: 'pSPh1I4PZyp5Nk1BGICL',
+      database: 'b5eaibq5aqmkgplyf7yq',
       autoLoadModels: true,
-      synchronize: true,
+      synchronize: false,
       models: [
         AuthUser,
         City,

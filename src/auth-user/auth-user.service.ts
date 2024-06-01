@@ -8,7 +8,7 @@ import { StatusRO } from 'src/libs/utils/interface';
 import * as bcrypt from 'bcrypt';
 import { HandleResponse } from 'src/libs/helper/handleResponse';
 import { Messages } from 'src/libs/utils/message';
-import { ResponseData, Role } from 'src/libs/utils/enums';
+import { ResponseData } from 'src/libs/utils/enums';
 import { LoginDto } from './dto/login.dto';
 import { ListOfDataDto } from './dto/listOfData.dto';
 import { City } from 'src/models/city.model';
@@ -52,62 +52,63 @@ export class AuthUserService {
     RegisterDto.validatePasswordRequirement(registerDto);
     const {
       password,
-      contactNo,
       email,
-      name,
-      state,
-      city,
-      address,
       role,
-      zipCode,
-      designation,
+      first_name,
+      last_name,
+      middle_name,
+      profile_image,
+      phone_no
     } = registerDto;
     const saltRounds: number = 10;
 
+    const findEmailAndPhone = await this.dbService.findOne(this.authUserModel,
+      {email, phone_no, is_deleted : false}
+      )
+
+      if (findEmailAndPhone) {
+        Logger.log(`Congratulation, your ${Messages.REGISTERED_SUCCESS}`);
+        return HandleResponse(
+          HttpStatus.NOT_FOUND,
+          ResponseData.ERROR,
+          `${Messages.ALREADY_REGISTERED}`
+        );
+      }
+      
     const hashedPassword = password
       ? await bcrypt.hash(password, saltRounds)
       : null;
 
     const addUser = {
-      name,
+      first_name,
       email,
       password: hashedPassword,
       role,
-      contact_no: contactNo,
-      address,
-      zip_code: zipCode,
-      state,
-      city,
-      designation,
+      phone_no,
+      last_name,
+      middle_name,
+      profile_image
     };
 
     await this.dbService.create(
       this.authUserModel,
-      addUser,
-      null,
-      {
-        uniqueField: 'contact_no',
-        message: `User is ${Messages.ALREADY_REGISTERED} with ${contactNo}.`,
-      },
+      addUser
     );
 
-    Logger.log(`Stack holder is ${Messages.ADD_SUCCESS}`);
+    Logger.log(`Congratulation, your ${Messages.REGISTERED_SUCCESS}`);
     return HandleResponse(
       HttpStatus.CREATED,
       ResponseData.SUCCESS,
-      `Stack holder is ${Messages.ADD_SUCCESS}`,
-      undefined,
-      undefined,
+      `Congratulation, your ${Messages.REGISTERED_SUCCESS}`,
     );
   }
 
   async login(loginDto: LoginDto) {
-    const { contactNo, password } = loginDto;
-    let role = [Role.Admin, Role.Dealer];
+    const { email, password } = loginDto;
 
     const findUser: AuthUser = await this.dbService.findOne(
       this.authUserModel,
-      { contact_no: contactNo, role },
+      { email: email, is_deleted : false},
       null,
       { message: Messages.USER_NOT_FOUND },
     );
@@ -120,11 +121,9 @@ export class AuthUserService {
     if (!isPasswordValid) {
       Logger.error(`Credentials ${Messages.DOES_NOT_MATCH}`);
       return HandleResponse(
-        HttpStatus.BAD_REQUEST,
+        HttpStatus.UNAUTHORIZED,
         ResponseData.ERROR,
         `Credentials ${Messages.DOES_NOT_MATCH}`,
-        undefined,
-        undefined,
       );
     } else {
       const token: string = this.jwt.sign({
@@ -141,7 +140,6 @@ export class AuthUserService {
         ResponseData.SUCCESS,
         `${findUser.role} ${Messages.LOGIN_SUCCESS}`,
         { token },
-        undefined,
       );
     }
   }
@@ -208,19 +206,15 @@ export class AuthUserService {
       this.authUserModel,
       { id: userId },
       [
-        'name',
-        'email',
-        'contact_no',
-        'address',
-        'city',
-        'state',
-        'zip_code',
-        'profile_image',
+        'first_name',
+      'email',
+      'role',
+      'phone_no',
+      'last_name',
+      'middle_name',
+      'profile_image'
       ],
       { message: `User ${Messages.NOT_FOUND}` },
-      null,
-      null,
-      true,
     );
 
     Logger.log(`User details ${Messages.GET_SUCCESS}`);
@@ -229,7 +223,6 @@ export class AuthUserService {
       ResponseData.SUCCESS,
       undefined,
       findUser,
-      undefined,
     );
   }
 
@@ -238,29 +231,23 @@ export class AuthUserService {
     userId: number,
   ): Promise<StatusRO> {
     const {
-      name,
-      contactNo,
-      address,
-      city,
-      state,
-      zipCode,
-      role,
+      first_name,
       email,
-      designation,
+      role,
+      phone_no,
+      last_name,
+      middle_name,
       profile_image,
     } = updateProfileDto;
 
     const updateProfileData = {
-      name,
-      contact_no: contactNo,
-      address,
-      zip_code: zipCode,
-      state,
-      city,
-      designation,
-      role,
+      first_name,
       email,
-      profile_image,
+      role,
+      phone_no,
+      last_name,
+      middle_name,
+      profile_image
     };
 
     await this.dbService.update(
@@ -272,13 +259,11 @@ export class AuthUserService {
       true,
     );
 
-    Logger.log(`Stack holder is ${Messages.UPDATE_SUCCESS}`);
+    Logger.log(`Your profile is ${Messages.UPDATE_SUCCESS}`);
     return HandleResponse(
       HttpStatus.CREATED,
       ResponseData.SUCCESS,
-      `Stack holder is ${Messages.UPDATE_SUCCESS}`,
-      undefined,
-      undefined,
+      `Your profile is ${Messages.UPDATE_SUCCESS}`,
     );
   }
 
@@ -312,9 +297,6 @@ export class AuthUserService {
       { id: userId },
       null,
       { message: Messages.USER_NOT_FOUND },
-      null,
-      null,
-      true,
     );
 
     const validPassword: any = await bcrypt.compare(
@@ -339,8 +321,6 @@ export class AuthUserService {
         HttpStatus.ACCEPTED,
         ResponseData.SUCCESS,
         `Your password is ${Messages.UPDATE_SUCCESS}`,
-        undefined,
-        undefined,
       );
     } else {
       Logger.error(Messages.INCORRECT_PASSWORD);
@@ -348,8 +328,6 @@ export class AuthUserService {
         HttpStatus.NOT_ACCEPTABLE,
         ResponseData.ERROR,
         Messages.INCORRECT_PASSWORD,
-        undefined,
-        undefined,
       );
     }
   }
@@ -363,9 +341,6 @@ export class AuthUserService {
       { email },
       null,
       { message: Messages.EMAIL_INCORRECT },
-      null,
-      null,
-      true,
     );
 
     const expireDate: any = moment().add(5, 'minute').format();
@@ -389,8 +364,7 @@ export class AuthUserService {
       HttpStatus.OK,
       ResponseData.SUCCESS,
       `Your OTP is ${Messages.SEND_SUCCESS}`,
-      { otp: generateOtp },
-      undefined,
+      { otp: generateOtp }
     );
   }
 
@@ -406,8 +380,6 @@ export class AuthUserService {
       HttpStatus.OK,
       ResponseData.SUCCESS,
       `Mail is ${Messages.SEND_SUCCESS}`,
-      undefined,
-      undefined,
     );
   }
 
@@ -436,8 +408,6 @@ export class AuthUserService {
         HttpStatus.BAD_REQUEST,
         ResponseData.ERROR,
         Messages.OTP_EXPIRED,
-        undefined,
-        undefined,
       );
     } else {
       await this.dbService.destroy(this.OtpModel, {
@@ -450,8 +420,6 @@ export class AuthUserService {
         HttpStatus.OK,
         ResponseData.SUCCESS,
         Messages.OTP_VERIFIED,
-        undefined,
-        undefined,
       );
     }
   }
@@ -482,8 +450,6 @@ export class AuthUserService {
       HttpStatus.ACCEPTED,
       ResponseData.SUCCESS,
       `Your password is ${Messages.UPDATE_SUCCESS}`,
-      undefined,
-      undefined,
     );
   }
 
@@ -498,17 +464,14 @@ export class AuthUserService {
         HttpStatus.OK,
         ResponseData.SUCCESS,
         undefined,
-        filesUploadsDetails,
-        undefined,
+        filesUploadsDetails
       );
     } else {
       Logger.error(Messages.NOT_FOUND);
       return HandleResponse(
         HttpStatus.NOT_FOUND,
         ResponseData.ERROR,
-        Messages.NOT_FOUND,
-        undefined,
-        undefined,
+        Messages.NOT_FOUND
       );
     }
   }

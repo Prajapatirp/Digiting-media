@@ -4,8 +4,8 @@ export function HandleResponse(
   statusCode: number,
   status: string,
   message: string,
-  data: any,
-  error: any,
+  data?: any,
+  error?: any,
 ) {
   return {
     statusCode: statusCode ? statusCode : HttpStatus.OK,

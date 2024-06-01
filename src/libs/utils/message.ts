@@ -1,9 +1,9 @@
 export enum Messages {
   FAILED_TO = 'Failed to',
-  ALREADY_REGISTERED = 'already registered',
+  ALREADY_REGISTERED = 'Email or phone number is already registered',
   REGISTERED_SUCCESS = 'registered successfully',
   DOES_NOT_MATCH = 'does not match.',
-  USER_NOT_FOUND = `User with this contact no doesn't exist.`,
+  USER_NOT_FOUND = `User with this email doesn't exist.`,
   LOGIN_SUCCESS = 'has been login successfully.',
   GET_SUCCESS = 'get successfully.',
   ROUTE_NOT_ACCESS = 'User do not have rights to access this route.',

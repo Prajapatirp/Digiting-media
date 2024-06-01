@@ -57,7 +57,7 @@ export class AuthUserController {
   }
 
   @ApiTags(ModuleName.user)
-  @Roles(Role.Admin)
+  @Roles(Role.Admin, Role.Dealer)
   @UseGuards(JwtGuard, RolesGuard)
   @ApiBearerAuth()
   @ApiOperation({ summary: 'view particular user profile' })
@@ -68,7 +68,7 @@ export class AuthUserController {
   }
 
   @ApiTags(ModuleName.user)
-  @Roles(Role.Admin)
+  @Roles(Role.Admin, Role.Dealer)
   @UseGuards(JwtGuard, RolesGuard)
   @ApiBearerAuth()
   @ApiOperation({ summary: 'This api is for update user profile' })
@@ -82,7 +82,7 @@ export class AuthUserController {
   }
 
   @ApiTags(ModuleName.user)
-  @Roles(Role.Admin)
+  @Roles(Role.Admin, Role.Dealer)
   @UseGuards(JwtGuard, RolesGuard)
   @ApiBearerAuth()
   @HttpCode(HttpStatus.OK)
@@ -94,7 +94,7 @@ export class AuthUserController {
   }
 
   @ApiTags(ModuleName.user)
-  @Roles(Role.Admin)
+  @Roles(Role.Admin, Role.Dealer)
   @UseGuards(JwtGuard, RolesGuard)
   @ApiBearerAuth()
   @ApiOperation({ summary: 'This api is for update user password' })

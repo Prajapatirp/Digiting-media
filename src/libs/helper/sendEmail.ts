@@ -9,10 +9,10 @@ const sendEmail = (mailDetail: any): Promise<any> => {
     const transport = nodemailer.createTransport({
       service: 'Gmail',
       secure: false,
-      port: parseInt(process.env.MAIL_PORT),
+      port: 25,
       auth: {
-        user: process.env.MAIL_USER,
-        pass: process.env.MAIL_PASS,
+        user: 'jayraychura.shivinfotech@gmail.com',
+        pass: 'ytuo avhy mzhz pvuj',
       },
       tls: {
         rejectUnauthorized: false,

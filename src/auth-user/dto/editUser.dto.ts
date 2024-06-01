@@ -3,81 +3,44 @@ import {
   IsEmail,
   IsEnum,
   IsMobilePhone,
-  IsNotEmpty,
-  IsNumber,
   IsOptional,
   IsString,
-  MaxLength,
-  MinLength,
-  ValidateIf,
 } from 'class-validator';
+import { Role } from 'src/libs/utils/enums';
 
 export class UpdateProfileDto {
   @ApiProperty({
-    example: 'krishna',
+    example: 'Joe',
     type: 'string',
     format: 'string',
-    required: false,
+    required: true,
   })
   @IsString()
   @IsOptional()
-  name: string;
+  first_name: string;
 
   @ApiProperty({
-    example: '1234567890',
+    example: 'John',
     type: 'string',
     format: 'string',
-    required: false,
-  })
-  @IsString()
-  @IsMobilePhone()
-  @IsOptional()
-  contactNo: string;
-
-  @ApiProperty({ example: 'Manager', type: 'string', required: true })
-  @IsEnum({
-    Employee: 'Employee',
-    Vendor: 'Vendor',
-    Manager: 'Manager',
-    Admin: 'Admin',
-  })
-  @IsOptional()
-  role: string;
-
-  @ApiProperty({
-    example: 'Anand Nagar Flats, 40/406, Prahlad Nagar',
-    type: 'string',
-    format: 'string',
-    required: false,
+    required: true,
   })
   @IsString()
   @IsOptional()
-  address: string;
+  last_name: string;
 
   @ApiProperty({
-    example: '380015',
+    example: 'Patel',
     type: 'string',
     format: 'string',
-    required: false,
-  })
-  @MinLength(6)
-  @MaxLength(6)
-  @IsString()
-  @IsOptional()
-  zipCode: string;
-
-  @ApiProperty({
-    example: 'rajkot',
-    type: 'string',
-    format: 'string',
-    required: false,
+    required: true,
   })
   @IsString()
   @IsOptional()
-  city: string;
+  middle_name: string;
 
   @ApiProperty({
-    example: 'krishna@gmail.com',
+    example: 'admin@gmail.com',
     type: 'string',
     format: 'string',
     required: true,
@@ -87,28 +50,26 @@ export class UpdateProfileDto {
   email: string;
 
   @ApiProperty({
-    example: 'gujarat',
+    example: '5678345673',
     type: 'string',
     format: 'string',
-    required: false,
+    required: true,
   })
   @IsString()
+  @IsMobilePhone()
   @IsOptional()
-  state: string;
+  phone_no: string;
 
-  @ApiProperty({
-    example: 'Developer',
-    type: 'string',
-    format: 'string',
-    required: false,
+  @ApiProperty({ example: 'Admin', type: 'string', required: true })
+  @IsEnum({
+    Admin: Role.Admin,
+    Dealer: Role.Dealer
   })
-  @IsString()
-  @IsNotEmpty()
-  @ValidateIf((o) => o.role === 'Employee')
-  designation: string;
+  @IsOptional()
+  role: string;
 
   @ApiProperty({
-    example: 'Image-2345sds',
+    example: 'user.png',
     type: 'string',
     format: 'string',
     required: false,
@@ -116,25 +77,4 @@ export class UpdateProfileDto {
   @IsString()
   @IsOptional()
   profile_image: string;
-
-  @ApiProperty({
-    example: [1, 2],
-    type: 'array',
-    items: { type: 'number' },
-    required: false,
-  })
-  @IsNumber({}, { each: true })
-  @IsNotEmpty()
-  @ValidateIf((o) => o.role === 'Vendor')
-  serviceId: number[];
-
-  @ApiProperty({
-    example: [1, 2],
-    type: 'array',
-    items: { type: 'number' },
-    required: false,
-  })
-  @IsNumber({}, { each: true })
-  @IsOptional()
-  project_id: number[];
 }
