@@ -15,6 +15,8 @@ import { ConfigModule } from '@nestjs/config';
 import { ServeStaticModule } from '@nestjs/serve-static';
 import { MulterModule } from '@nestjs/platform-express';
 import { join } from 'path';
+import { DealModule } from './deal/deal.module';
+import { Deal } from './models/deal.model';
 dotenv.config();
 
 @Module({
@@ -41,6 +43,7 @@ dotenv.config();
         Package,
         Otp,
         ContactUs,
+        Deal
       ],
     }),
     ConfigModule.forRoot({
@@ -54,6 +57,7 @@ dotenv.config();
     MulterModule.register({
       dest: '../public/uploads',
     }),
+    DealModule,
   ],
   controllers: [AppController],
   providers: [AppService],

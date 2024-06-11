@@ -7,10 +7,11 @@ import { JwtModule } from '@nestjs/jwt';
 import { DbService } from 'src/libs/services/db.service';
 import { ConfigModule } from '@nestjs/config';
 import { JwtStrategy } from 'src/libs/services/auth/strategy/jwt.strategy';
+import { AuthUser } from 'src/models/authUser.model';
 
 @Module({
   imports: [
-    SequelizeModule.forFeature([Package]),
+    SequelizeModule.forFeature([Package, AuthUser]),
     ConfigModule.forRoot({ isGlobal: true }),
     JwtModule.register({
       secret: process.env.JWTSecretKey || 'secretKey',

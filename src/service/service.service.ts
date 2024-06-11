@@ -47,7 +47,7 @@ export class ServiceService {
     )
 
     Logger.log(`Package is ${Messages.UPDATE_SUCCESS}`)
-    return HandleResponse(HttpStatus.CREATED, ResponseData.SUCCESS, `Package is ${Messages.UPDATE_SUCCESS}`)
+    return HandleResponse(HttpStatus.ACCEPTED, ResponseData.SUCCESS, `Package is ${Messages.UPDATE_SUCCESS}`)
   }
 
   async deletePackage(packageId: number): Promise<StatusRO> {

@@ -8,6 +8,7 @@ import {
   ForeignKey,
   DataType,
   Unique,
+  BelongsTo,
 } from 'sequelize-typescript';
 import { AuthUser } from './authUser.model';
 import { MaxLength } from 'class-validator';
@@ -15,7 +16,7 @@ import { Package } from './package.model';
 import { DealStatus } from 'src/libs/utils/enums';
 
 @Table({ tableName: 'Deal' })
-export class Service extends Model<Service> {
+export class Deal extends Model<Deal> {
   @ForeignKey(() => AuthUser)
   @AllowNull(false)
   @MaxLength(11)
@@ -55,13 +56,11 @@ export class Service extends Model<Service> {
   email: string;
 
   @AllowNull(false)
-  @Unique
   @MaxLength(50)
   @Column
   pin_code: string;
 
   @AllowNull(false)
-  @Unique
   @MaxLength(50)
   @Column
   month: string;
@@ -133,4 +132,7 @@ export class Service extends Model<Service> {
 
   @Column({ defaultValue: false })
   is_deleted: boolean;
+
+  @BelongsTo(() => Package)
+  package: Package;
 }

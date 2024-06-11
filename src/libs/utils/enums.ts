@@ -14,6 +14,7 @@ export enum ModuleName {
   stateList = 'stateList',
   package = 'Package',
   ContactUs = 'ContactUs',
+  Deal = 'Deal'
 }
 
 export enum DealStatus {
