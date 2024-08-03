@@ -57,6 +57,14 @@ export class AuthUserController {
   }
 
   @ApiTags(ModuleName.user)
+  @ApiOperation({ summary: 'This Api list of data for sales users.' })
+  @HttpCode(HttpStatus.OK)
+  @Post('listUsers')
+  listOfUsers(@Body() dto: ListOfDataDto): Promise<StatusRO> {
+    return this.authUserService.listOfUsers(dto);
+  }
+
+  @ApiTags(ModuleName.user)
   @Roles(Role.Admin, Role.Dealer)
   @UseGuards(JwtGuard, RolesGuard)
   @ApiBearerAuth()

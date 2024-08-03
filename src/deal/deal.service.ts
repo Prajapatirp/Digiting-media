@@ -80,6 +80,6 @@ export class DealService {
     })
 
     Logger.log(`Deal is ${Messages.DELETE_SUCCESS}`)
-    return HandleResponse(HttpStatus.OK, ResponseData.SUCCESS, `Deal is ${Messages.DELETED_SUCCESS}`)
+    return HandleResponse(HttpStatus.OK, ResponseData.SUCCESS, `Deal is ${Messages.DELETE_SUCCESS}`)
   }
 }

@@ -56,7 +56,7 @@ export class ServiceService {
     })
 
     Logger.log(`Package is ${Messages.DELETE_SUCCESS}`)
-    return HandleResponse(HttpStatus.OK, ResponseData.SUCCESS, `Package is ${Messages.DELETED_SUCCESS}`)
+    return HandleResponse(HttpStatus.OK, ResponseData.SUCCESS, `Package is ${Messages.DELETE_SUCCESS}`)
   }
 
   async listPackage(dto: ListOfDataDto): Promise<StatusRO> {

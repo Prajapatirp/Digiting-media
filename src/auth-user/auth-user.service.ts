@@ -104,11 +104,11 @@ export class AuthUserService {
   }
 
   async login(loginDto: LoginDto) {
-    const { email, password } = loginDto;
+    const { password, contactNo } = loginDto;
 
     const findUser: AuthUser = await this.dbService.findOne(
       this.authUserModel,
-      { email: email, is_deleted : false},
+      { phone_no: contactNo, is_deleted : false},
       null,
       { message: Messages.USER_NOT_FOUND },
     );
@@ -226,6 +226,45 @@ export class AuthUserService {
     );
   }
 
+  async listOfUsers(dto: ListOfDataDto): Promise<StatusRO> {
+
+    const users: any[] = await this.dbService.findAll(
+      this.authUserModel,
+      {
+        ...(dto.selectionCriteria ?? {}),
+      },
+      {
+        ...(dto.condition ?? {}),
+      },
+      [['createdAt', 'DESC']],
+      undefined,
+      { message: Messages.NOT_FOUND },
+    );
+
+    if (users && users.length > 0 ) {
+      users.forEach((item) => {
+        return item.dataValues.fullName = `${item.dataValues.first_name} ${item.dataValues.middle_name} ${item.dataValues.last_name}`;
+      })
+
+      console.log(users);
+
+      Logger.log(`List of users ${Messages.GET_SUCCESS}`);
+      return HandleResponse(
+        HttpStatus.OK,
+        ResponseData.SUCCESS,
+        undefined,
+        users,
+      );
+    } else {
+      Logger.error(Messages.NOT_FOUND);
+      return HandleResponse(
+        HttpStatus.NOT_FOUND,
+        ResponseData.ERROR,
+        Messages.NOT_FOUND,
+      );
+    } 
+  }
+
   async updateProfile(
     updateProfileDto: UpdateProfileDto,
     userId: number,
@@ -276,13 +315,11 @@ export class AuthUserService {
       { message: Messages.NOT_FOUND },
     );
 
-    Logger.log(`Stack holder is ${Messages.DELETE_SUCCESS}`);
+    Logger.log(`Users ${Messages.DELETE_SUCCESS}`);
     return HandleResponse(
       HttpStatus.OK,
       ResponseData.SUCCESS,
-      `Stack holder is ${Messages.DELETE_SUCCESS}`,
-      undefined,
-      undefined,
+      `Users ${Messages.DELETE_SUCCESS}`,
     );
   }
 
@@ -426,6 +463,9 @@ export class AuthUserService {
 
   async forgotPassword(dto: ForgotPasswordDto) {
     const { email, newPassword } = dto;
+
+    console.log("737461",dto);
+    
 
     const existingUser: AuthUser = await this.dbService.findOne(
       this.authUserModel,
