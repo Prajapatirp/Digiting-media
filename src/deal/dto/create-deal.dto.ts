@@ -1,14 +1,6 @@
-import { ApiProperty } from '@nestjs/swagger';
-import {
-  IsBoolean,
-  IsEmail,
-  IsEnum,
-  IsNotEmpty,
-  IsNumber,
-  IsOptional,
-  IsString,
-} from 'class-validator';
-import { DealStatus } from 'src/libs/utils/enums';
+import { ApiProperty } from '@nestjs/swagger'
+import { IsBoolean, IsEmail, IsEnum, IsNotEmpty, IsNumber, IsOptional, IsString } from 'class-validator'
+import { DealStatus } from 'src/libs/utils/enums'
 
 export class AddDealDto {
   @ApiProperty({
@@ -19,7 +11,7 @@ export class AddDealDto {
   })
   @IsNumber()
   @IsNotEmpty()
-  package_id: number;
+  package_id: number
 
   @ApiProperty({
     example: 'Techno',
@@ -29,7 +21,7 @@ export class AddDealDto {
   })
   @IsString()
   @IsNotEmpty()
-  company_name: string;
+  company_name: string
 
   @ApiProperty({
     example: 'Patel',
@@ -39,7 +31,7 @@ export class AddDealDto {
   })
   @IsString()
   @IsNotEmpty()
-  customer_name: string;
+  customer_name: string
 
   @ApiProperty({
     example: '9875462584',
@@ -49,7 +41,7 @@ export class AddDealDto {
   })
   @IsString()
   @IsNotEmpty()
-  owner_mobile: string;
+  owner_mobile: string
 
   @ApiProperty({
     example: '9875462584',
@@ -59,7 +51,7 @@ export class AddDealDto {
   })
   @IsString()
   @IsNotEmpty()
-  inquiry_number: string;
+  inquiry_number: string
 
   @ApiProperty({
     example: 'admin@gmail.com',
@@ -69,7 +61,7 @@ export class AddDealDto {
   })
   @IsEmail()
   @IsOptional()
-  email: string;
+  email: string
 
   @ApiProperty({
     example: '987456',
@@ -79,17 +71,17 @@ export class AddDealDto {
   })
   @IsString()
   @IsNotEmpty()
-  pin_code: string;
+  pin_code: string
 
   @ApiProperty({
     example: '3 month',
     type: 'string',
     format: 'string',
-    required: true,
+    required: false,
   })
   @IsString()
-  @IsNotEmpty()
-  month: string;
+  @IsOptional()
+  month: string
 
   @ApiProperty({
     example: 6000,
@@ -99,7 +91,7 @@ export class AddDealDto {
   })
   @IsNumber()
   @IsNotEmpty()
-  payment: number;
+  payment: number
 
   @ApiProperty({
     example: 'Sola Road',
@@ -109,7 +101,7 @@ export class AddDealDto {
   })
   @IsString()
   @IsOptional()
-  address: string;
+  address: string
 
   @ApiProperty({
     example: '3 month',
@@ -119,7 +111,7 @@ export class AddDealDto {
   })
   @IsString()
   @IsOptional()
-  package_details: string;
+  package_details: string
 
   @ApiProperty({
     example: '3 month',
@@ -129,7 +121,7 @@ export class AddDealDto {
   })
   @IsString()
   @IsNotEmpty()
-  payment_duration: string;
+  payment_duration: string
 
   @ApiProperty({
     example: 'true',
@@ -139,17 +131,18 @@ export class AddDealDto {
   })
   @IsBoolean()
   @IsNotEmpty()
-  is_listing: boolean;
+  is_listing: boolean
 
   @ApiProperty({
-    example: 'Contrary to popular belief, Lorem Ipsum is not simply random text. It has roots in a piece of classical Latin literature from 45 BC, making it over 2000 years old.',
+    example:
+      'Contrary to popular belief, Lorem Ipsum is not simply random text. It has roots in a piece of classical Latin literature from 45 BC, making it over 2000 years old.',
     type: 'string',
     format: 'string',
     required: false,
   })
   @IsString()
   @IsOptional()
-  description: string;
+  description: string
 
   @ApiProperty({
     example: '2021-11-08',
@@ -159,7 +152,7 @@ export class AddDealDto {
   })
   @IsString()
   @IsNotEmpty()
-  contract_date: Date;
+  contract_date: Date
 
   @ApiProperty({
     example: '2021-11-08',
@@ -169,7 +162,7 @@ export class AddDealDto {
   })
   @IsString()
   @IsNotEmpty()
-  contract_end_date: Date;
+  contract_end_date: Date
 
   @ApiProperty({
     example: 'User.png',
@@ -179,7 +172,7 @@ export class AddDealDto {
   })
   @IsString()
   @IsOptional()
-  contract_images: string;
+  contract_images: string
 
   @ApiProperty({
     example: 'User1.png',
@@ -189,23 +182,13 @@ export class AddDealDto {
   })
   @IsString()
   @IsOptional()
-  check_image: string;
+  check_image: string
 
   @ApiProperty({ example: 'Open', type: 'string', required: true })
   @IsEnum({
     Open: DealStatus.open,
-    Close: DealStatus.close
+    Close: DealStatus.close,
   })
   @IsNotEmpty()
-  status: string;
-
-  @ApiProperty({
-    example: 'user.png',
-    type: 'string',
-    format: 'string',
-    required: false,
-  })
-  @IsString()
-  @IsOptional()
-  profile_image: string;
+  status: string
 }

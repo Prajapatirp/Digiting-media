@@ -60,7 +60,7 @@ export class Deal extends Model<Deal> {
   @Column
   pin_code: string;
 
-  @AllowNull(false)
+  @AllowNull(true)
   @MaxLength(50)
   @Column
   month: string;

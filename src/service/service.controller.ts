@@ -66,9 +66,6 @@ export class ServiceController {
     return this.serviceService.deletePackage(packageId);
   }
 
-  @Roles(Role.Admin)
-  @UseGuards(JwtGuard, RolesGuard)
-  @ApiBearerAuth()
   @HttpCode(HttpStatus.OK)
   @ApiOperation({ summary: 'This api is for list different package' })
   @Post('/list')
