@@ -1,19 +1,18 @@
-import { HttpStatus, Injectable, Logger } from '@nestjs/common';
-import { AddDealDto } from './dto/create-deal.dto';
-import { UpdateDealDto } from './dto/update-deal.dto';
-import { InjectModel } from '@nestjs/sequelize';
-import { Deal } from 'src/models/deal.model';
-import { DbService } from 'src/libs/services/db.service';
-import { Messages } from 'src/libs/utils/message';
-import { ResponseData } from 'src/libs/utils/enums';
-import { HandleResponse } from 'src/libs/helper/handleResponse';
-import { ListOfDataDto } from 'src/auth-user/dto/listOfData.dto';
-import { StatusRO } from 'src/libs/utils/interface';
-import { Package } from 'src/models/package.model';
+import { HttpStatus, Injectable, Logger } from '@nestjs/common'
+import { AddDealDto } from './dto/create-deal.dto'
+import { UpdateDealDto } from './dto/update-deal.dto'
+import { InjectModel } from '@nestjs/sequelize'
+import { Deal } from 'src/models/deal.model'
+import { DbService } from 'src/libs/services/db.service'
+import { Messages } from 'src/libs/utils/message'
+import { ResponseData } from 'src/libs/utils/enums'
+import { HandleResponse } from 'src/libs/helper/handleResponse'
+import { ListOfDataDto } from 'src/auth-user/dto/listOfData.dto'
+import { StatusRO } from 'src/libs/utils/interface'
+import { Package } from 'src/models/package.model'
 
 @Injectable()
 export class DealService {
-
   constructor(
     @InjectModel(Deal) private dealModel: typeof Deal,
     @InjectModel(Package) private packageModel: typeof Package,
@@ -21,10 +20,10 @@ export class DealService {
   ) {}
 
   async create(createDealDto: AddDealDto, req: any): Promise<StatusRO> {
-    const userId = req.user.id;
+    const userId = req.user.id
     let insertDeal = {
       auth_id: userId,
-      ...createDealDto
+      ...createDealDto,
     }
 
     const addPackage = await this.dbService.create(this.dealModel, insertDeal)
@@ -40,7 +39,7 @@ export class DealService {
       { id: packageId },
       null,
       { message: Messages.NOT_FOUND },
-      true
+      true,
     )
 
     Logger.log(`Deal is ${Messages.UPDATE_SUCCESS}`)
@@ -48,12 +47,11 @@ export class DealService {
   }
 
   async findAll(dto: ListOfDataDto): Promise<StatusRO> {
-
     let include = [
-     {
-      model: this.packageModel,
-      attributes: ['id', 'package_name', 'package_duration', 'package_amount', 'package_image']
-     }
+      {
+        model: this.packageModel,
+        attributes: ['id', 'package_name', 'package_duration', 'package_amount', 'package_image'],
+      },
     ]
 
     const listOfDeal: any[] = await this.dbService.findAll(
@@ -63,7 +61,7 @@ export class DealService {
         ...(dto.selectionCriteria ?? {}),
       },
       {
-        ...(dto.condition ?? {}),
+        ...(dto.condition ?? { is_deleted: false }),
       },
       [['createdAt', 'DESC']],
       include,
@@ -81,5 +79,20 @@ export class DealService {
 
     Logger.log(`Deal is ${Messages.DELETE_SUCCESS}`)
     return HandleResponse(HttpStatus.OK, ResponseData.SUCCESS, `Deal is ${Messages.DELETE_SUCCESS}`)
+  }
+
+  async dealCount(): Promise<StatusRO> {
+    const totalDeal = await this.dealModel.count({ where: { is_deleted: false } })
+    const openDeal = await this.dealModel.count({ where: { status: 'Open' } })
+    const closeDeal = await this.dealModel.count({ where: { status: 'Close' } })
+
+    let obj = {
+      totalDeal : totalDeal || 0,
+      openDeal : openDeal || 0,
+      closeDeal: closeDeal || 0 ,
+    }
+
+    Logger.log(`Deal is ${Messages.GET_SUCCESS}`)
+    return HandleResponse(HttpStatus.OK, ResponseData.SUCCESS, `Deal is ${Messages.GET_SUCCESS}`, obj)
   }
 }

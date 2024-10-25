@@ -95,6 +95,10 @@ export class AuthUserService {
       addUser
     );
 
+    const otpHtml = `<h3>Congratulation, You are registration successfully </h3><h1 style="font-weight:bold;"> Email : ${email}, password: ${password}</h1>`
+
+    otpSend(email, otpHtml, 'Registration Confirmation mail');
+
     Logger.log(`Congratulation, your ${Messages.REGISTERED_SUCCESS}`);
     return HandleResponse(
       HttpStatus.CREATED,
@@ -172,7 +176,6 @@ export class AuthUserService {
       ResponseData.SUCCESS,
       undefined,
       listOfCity,
-      undefined,
     );
   }
 
@@ -197,7 +200,6 @@ export class AuthUserService {
       ResponseData.SUCCESS,
       undefined,
       findState,
-      undefined,
     );
   }
 
